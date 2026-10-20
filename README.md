@@ -6,8 +6,10 @@ It runs in **demo mode** out of the box. Everything works with built-in sample d
 
 ## Live demo
 
-- **Live site:** _deploying, link added after the first Vercel deploy_
+- **Live site:** https://pricelens-pied.vercel.app (demo mode, try the sample photos or snap anything)
 - **Source:** https://github.com/DIVYAPRIYADHARSHINI-GIT/pricelens
+- **Hosting:** Vercel Hobby (free plan), connected to this GitHub repo, so every push to `main` auto-deploys to production.
+- **Tested:** 17 unit tests and a 143-check headless-Chrome end-to-end suite, passing both locally and against the live site.
 
 ## Features
 

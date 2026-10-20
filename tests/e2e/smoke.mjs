@@ -84,7 +84,10 @@ const nav = async (p, path) => {
 /** Client-side navigation via a real link (keeps in-memory search state). */
 const clickNav = async (p, testid) => {
 	const id = (await p.eval('innerWidth')) >= 900 ? `side-${testid}` : `tab-${testid}`;
+	const href = await p.eval(`document.querySelector('[data-testid=${id}]')?.getAttribute('href')`);
 	await p.click(`[data-testid=${id}]`);
+	// Wait for the new route (over the network the old page title is still on screen for a moment).
+	await p.waitFor(`location.pathname === ${JSON.stringify(href)} && document.querySelector('[data-testid=page-title]')`, 8000);
 	await sleep(250);
 	await ready(p);
 };
