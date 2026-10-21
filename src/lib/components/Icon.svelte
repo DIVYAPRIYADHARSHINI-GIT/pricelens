@@ -46,7 +46,7 @@
 </script>
 
 <script lang="ts">
-	let { name, size = 22, stroke = 2.5, label = '', class: cls = '' }: { name: IconName; size?: number; stroke?: number; label?: string; class?: string } = $props();
+	let { name, size = 20, stroke = 1.5, label = '', class: cls = '' }: { name: IconName; size?: number; stroke?: number; label?: string; class?: string } = $props();
 </script>
 
 <svg

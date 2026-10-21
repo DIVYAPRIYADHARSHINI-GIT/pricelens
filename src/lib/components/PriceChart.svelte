@@ -56,13 +56,13 @@
 			<path d={geo.area} class="area" />
 			<path d={geo.line} class="line" />
 			{#each points as p, i (p.date)}
-				<circle cx={geo.x(i)} cy={geo.y(p.price)} r={i === points.length - 1 || i === geo.minI ? 6 : 3.5} class:now={i === points.length - 1} class:min={i === geo.minI} class="pt"><title>{shortDate(p.date)}: {inr(p.price)}</title></circle>
+				<circle cx={geo.x(i)} cy={geo.y(p.price)} r={i === points.length - 1 || i === geo.minI ? 4.5 : 2.5} class:now={i === points.length - 1} class:min={i === geo.minI} class="pt"><title>{shortDate(p.date)}: {inr(p.price)}</title></circle>
 			{/each}
 		</svg>
-		<figcaption class="row cap">
-			<span>Low <b class="mono">{inr(low)}</b></span>
-			<span>High <b class="mono">{inr(high)}</b></span>
-			<span>Today <b class="mono">{inr(now)}</b></span>
+		<figcaption class="cap">
+			<span><small>Low</small><b class="mono">{inr(low)}</b></span>
+			<span><small>High</small><b class="mono">{inr(high)}</b></span>
+			<span><small>Today</small><b class="mono">{inr(now)}</b></span>
 		</figcaption>
 	</figure>
 {:else}
@@ -77,52 +77,72 @@
 		width: 100%;
 		height: auto;
 		display: block;
-		background: var(--surface);
-		border: var(--bw) solid var(--line);
-		border-radius: 14px;
+		background: transparent;
 	}
 	.grid {
-		stroke: var(--line);
-		stroke-opacity: 0.15;
-		stroke-width: 1.5;
+		stroke: var(--hair);
+		stroke-width: 1;
 	}
 	.lbl {
-		font: 700 13px var(--mono);
-		fill: var(--ink-2);
+		font: 400 12px var(--sans);
+		letter-spacing: 0.04em;
+		fill: var(--muted);
 	}
 	.tl {
-		fill: var(--ink);
+		fill: var(--sale);
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+		font-size: 11px;
 	}
 	.area {
-		fill: var(--blue);
-		fill-opacity: 0.18;
+		fill: var(--ink);
+		fill-opacity: 0.05;
 	}
 	.line {
 		fill: none;
 		stroke: var(--ink);
-		stroke-width: 4;
+		stroke-width: 1.75;
 		stroke-linejoin: round;
 		stroke-linecap: round;
 	}
 	.pt {
-		fill: var(--surface);
+		fill: var(--bg);
 		stroke: var(--ink);
-		stroke-width: 2.5;
+		stroke-width: 1.25;
 	}
 	.pt.min {
-		fill: var(--green);
+		fill: var(--ink);
 	}
 	.pt.now {
-		fill: var(--yellow);
+		fill: var(--sale);
+		stroke: var(--sale);
 	}
 	.target {
-		stroke: var(--pink);
-		stroke-width: 3;
-		stroke-dasharray: 8 6;
+		stroke: var(--sale);
+		stroke-width: 1;
+		stroke-dasharray: 5 5;
 	}
 	.cap {
-		gap: 8px 18px;
-		margin-top: 8px;
-		font-size: 0.92rem;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		margin-top: 14px;
+		border-top: 1px solid var(--hair);
+	}
+	.cap span {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		padding: 12px 0 0;
+	}
+	.cap small {
+		font: 500 0.66rem/1 var(--sans);
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--muted);
+	}
+	.cap b {
+		font-family: var(--serif);
+		font-weight: 400;
+		font-size: 1.35rem;
 	}
 </style>

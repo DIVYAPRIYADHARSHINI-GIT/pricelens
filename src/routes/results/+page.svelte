@@ -42,23 +42,24 @@
 <div class="page results">
 	{#if busy}
 		<section class="loading-wrap" aria-busy="true" aria-live="polite" data-testid="search-loading">
-			<div class="card load-top">
+			<div class="load-top">
 				{#if search.preview}
-					<img class="thumb pv" src={search.preview} alt="Your scanned product" width="112" height="112" data-testid="preview" />
+					<img class="pv" src={search.preview} alt="Your scanned product" width="120" height="160" data-testid="preview" />
 				{:else}
 					<div class="skeleton pv" aria-hidden="true"></div>
 				{/if}
 				<div class="lt">
+					<span class="kicker">One moment</span>
 					<h1 data-testid="page-title">{phase === 'processing' ? 'Getting your photo ready…' : 'Comparing prices…'}</h1>
 					<p class="msg" data-testid="loading-message">{search.message}</p>
 					<div class="bar" aria-hidden="true"><span></span></div>
 				</div>
 			</div>
-			<div class="skeleton" style="height: 220px" aria-hidden="true"></div>
-			<div class="skeleton" style="height: 96px" aria-hidden="true"></div>
-			<div class="skeleton" style="height: 96px" aria-hidden="true"></div>
+			<div class="skeleton" style="height: 240px" aria-hidden="true"></div>
+			<div class="skeleton" style="height: 72px" aria-hidden="true"></div>
+			<div class="skeleton" style="height: 72px" aria-hidden="true"></div>
 			<div class="sk-row" aria-hidden="true">
-				{#each [1, 2, 3] as i (i)}<div class="skeleton" style="height: 200px"></div>{/each}
+				{#each [1, 2, 3] as i (i)}<div class="skeleton" style="aspect-ratio: 3 / 4"></div>{/each}
 			</div>
 		</section>
 	{:else if phase === 'error' && search.error}
@@ -66,19 +67,19 @@
 		<h1 class="sr-only" data-testid="page-title">{e.title}</h1>
 		<StateCard icon={e.icon} tone={e.tone} title={e.title} message={search.error.message} testid="error-{search.error.kind}">
 			{#if search.error.kind === 'offline' || search.error.kind === 'server' || search.error.kind === 'rate-limited'}
-				<button type="button" class="btn yellow" onclick={() => search.retry()} data-testid="retry"><Icon name="refresh" size={18} /> Try again</button>
+				<button type="button" class="btn primary" onclick={() => search.retry()} data-testid="retry"><Icon name="refresh" size={16} /> Try again</button>
 			{/if}
-			<a class="btn" href="/" onclick={() => search.reset()} data-testid="back-scan"><Icon name="camera" size={18} /> Scan another photo</a>
+			<a class="btn" href="/" onclick={() => search.reset()} data-testid="back-scan"><Icon name="camera" size={16} /> Scan another photo</a>
 		</StateCard>
 	{:else if phase === 'uncertain' && result}
-		<section class="card unsure" data-testid="not-sure">
+		<section class="unsure" data-testid="not-sure">
 			<div class="unsure-head">
 				{#if search.preview}
-					<img class="thumb pv" src={search.preview} alt="What you scanned" width="112" height="112" />
+					<img class="pv" src={search.preview} alt="What you scanned" width="120" height="160" />
 				{/if}
 				<div>
 					{#if detected?.reason === 'blurry'}
-						<p class="tag above"><Icon name="blur" size={16} /> Blurry photo</p>
+						<p class="tag above"><Icon name="blur" size={14} /> Blurry photo</p>
 					{:else if detected?.reason === 'no-product' && result.query}
 						<p class="tag above">No results for "{result.query}"</p>
 					{:else if detected?.label && detected.reason === 'low-confidence'}
@@ -100,7 +101,7 @@
 				<EditSearch initialQuery="" initialCategory={detected?.reason === 'low-confidence' ? (detected.category ?? null) : null} submitLabel="Find prices" onsubmit={correct} />
 			{/key}
 			<div class="row">
-				<a class="btn sm" href="/" onclick={() => search.reset()} data-testid="retake"><Icon name="camera" size={18} /> Retake photo</a>
+				<a class="textlink" href="/" onclick={() => search.reset()} data-testid="retake"><Icon name="camera" size={14} /> Retake photo</a>
 			</div>
 			<p class="muted fine">Demo tip: the sample catalog has dresses, shoes, bags, headphones and watches. Other categories show a no-results state.</p>
 		</section>
@@ -111,7 +112,7 @@
 	{:else}
 		<h1 class="sr-only" data-testid="page-title">Results</h1>
 		<StateCard icon="search" title="No results yet" message="Scan or upload a product photo, or type what you're looking for. Results show up here." testid="results-empty">
-			<a class="btn yellow" href="/" data-testid="go-scan"><Icon name="camera" size={18} /> Start a scan</a>
+			<a class="btn primary" href="/" data-testid="go-scan"><Icon name="camera" size={16} /> Start a scan</a>
 		</StateCard>
 	{/if}
 </div>
@@ -122,74 +123,82 @@
 	.loading-wrap {
 		display: flex;
 		flex-direction: column;
-		gap: 16px;
+		gap: 18px;
 	}
 	.load-top {
 		display: flex;
-		align-items: center;
-		gap: 16px;
+		align-items: flex-end;
+		gap: 20px;
+		padding-bottom: 24px;
+		border-bottom: 1px solid var(--hair);
 	}
 	.pv {
 		width: 96px;
-		height: 96px;
+		aspect-ratio: 3 / 4;
+		height: auto;
 		flex: none;
 		object-fit: cover;
+		background: var(--surface-2);
 	}
 	.lt {
 		flex: 1;
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
+		gap: 10px;
 		min-width: 0;
 	}
 	.lt h1 {
-		font-size: clamp(1.3rem, 5vw, 1.8rem);
+		font-size: clamp(1.8rem, 6vw, 3rem);
 	}
 	.msg {
-		font-weight: 700;
+		font-family: var(--serif);
+		font-style: italic;
+		font-size: 1.05rem;
+		color: var(--ink-2);
 	}
 	.bar {
-		height: 14px;
-		border: var(--bw) solid var(--line);
-		border-radius: 999px;
+		height: 1px;
+		margin-top: 6px;
 		overflow: hidden;
-		background: var(--surface-2);
+		background: var(--hair);
 	}
 	.bar span {
 		display: block;
 		height: 100%;
-		width: 40%;
-		background: var(--yellow);
-		border-right: var(--bw) solid var(--line);
-		animation: slide 1.1s ease-in-out infinite alternate;
+		width: 35%;
+		background: var(--ink);
+		animation: slide 1.2s var(--ease) infinite alternate;
 	}
 	@keyframes slide {
 		from {
-			transform: translateX(-10%);
+			transform: translateX(-20%);
 		}
 		to {
-			transform: translateX(160%);
+			transform: translateX(200%);
 		}
 	}
 	.sk-row {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
-		gap: 12px;
+		gap: 14px;
 	}
 	.unsure {
 		display: flex;
 		flex-direction: column;
-		gap: 16px;
+		gap: 26px;
+		max-width: 860px;
 	}
 	.unsure-head {
 		display: flex;
-		gap: 16px;
-		align-items: flex-start;
+		gap: 22px;
+		align-items: flex-end;
+		padding-bottom: 24px;
+		border-bottom: 1px solid var(--hair);
 	}
 	.unsure-head > div {
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
+		gap: 12px;
 	}
 	.unsure-head .tag {
 		align-self: flex-start;
@@ -199,8 +208,7 @@
 	}
 	@media (min-width: 640px) {
 		.pv {
-			width: 112px;
-			height: 112px;
+			width: 132px;
 		}
 	}
 </style>

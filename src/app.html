@@ -4,7 +4,8 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 		<meta name="description" content="PriceLens - Snap. Compare. Save. Take a photo of a product and see which stores sell it, cheapest first, plus similar and cheaper suggestions." />
-		<meta name="theme-color" content="#FFD60A" />
+		<meta name="theme-color" content="#F7F5F0" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#0A0A0A" media="(prefers-color-scheme: dark)" />
 		<meta property="og:title" content="PriceLens - Snap. Compare. Save." />
 		<meta property="og:description" content="Visual shopping search for budget shoppers: snap a product, compare stores, cheapest first." />
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" type="image/svg+xml" />
@@ -19,14 +20,14 @@
 			} catch (e) {}
 		</script>
 		<style>
-			#boot-loader { position: fixed; inset: 0; display: grid; place-items: center; background: #fff8e7; font: 700 20px system-ui, sans-serif; color: #111; z-index: 50; }
+			#boot-loader { position: fixed; inset: 0; display: grid; place-items: center; background: #f7f5f0; font: 400 30px 'Didot', 'Bodoni 72', Georgia, serif; letter-spacing: 0.02em; color: #111; z-index: 50; }
 			html[data-theme='dark'] #boot-loader { background: #0a0a0a; color: #f5f5f5; }
-			#boot-loader span { border: 3px solid currentColor; border-radius: 16px; padding: 14px 22px; box-shadow: 6px 6px 0 currentColor; background: #ffd60a; color: #111; }
+			#boot-loader span { padding: 0 0 8px; border-bottom: 1px solid currentColor; }
 		</style>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
-		<div id="boot-loader" data-testid="loading"><span>PriceLens…</span></div>
+		<div id="boot-loader" data-testid="loading"><span>PriceLens</span></div>
 		<noscript><p style="padding:24px;font:700 18px system-ui">PriceLens needs JavaScript to scan and compare prices.</p></noscript>
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>

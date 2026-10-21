@@ -45,14 +45,21 @@ It runs in **demo mode** out of the box. Everything works with built-in sample d
 
 **Settings and data**
 - JSON backup export and import (validated before anything changes), and **Start fresh**, which clears history, wishlist and alerts but keeps budget and store settings.
-- Dark mode (black background, neon accents). It follows the system on first visit and is remembered after that.
+- Dark mode (near-black background, bone-white type, softened accents). It follows the system on first visit and is remembered after that.
 - Privacy note: photos are processed in memory and **never stored on the server**.
 
-**Design and accessibility**
-- Mobile-first (360 px) neo-brutalist style: thick black borders, hard offset shadows, flat yellow `#FFD60A`, pink `#FF6B9D`, blue `#4D96FF` and green `#6BCB77` on off-white, and chunky buttons that press down when clicked. Headings use Space Grotesk; prices and IDs use Space Mono.
-- Bottom tab bar on mobile and tablet (Scan, Results, Saved, Alerts, Settings), sidebar on desktop. Main actions sit in the thumb zone.
-- Custom SVG icons only, a light hover wobble (off under `prefers-reduced-motion`), loading skeletons, and empty / no-result / error states: no internet, blurry photo, camera permission denied, unsupported or too-large file, rate limited, and 404.
-- Tap targets of at least 44 px, alt text on all images, keyboard-friendly controls, visible focus rings and contrast-safe text.
+**Design and accessibility: "Maison" editorial style**
+- Inspired by fashion e-commerce sites (Zara, COS, SSENSE, Arket):
+  - **Palette:** monochrome ink `#111` on warm paper `#F7F5F0`, hairline `#DCD6CC` rules and a stone surface. Colour appears only where it means something: oxblood `#9B2C2C` for discounts and warnings, a sage sticker for "Good deal", clay for "Above average", and a black sticker for "Lowest price".
+  - **Type:** headlines, prices and the wordmark use the Didone serif **Bodoni Moda**. UI, labels and numbers use the geometric sans **Jost**, with uppercase letter-spaced micro-labels and tabular figures for prices.
+  - **Shapes:** square corners everywhere, 1 px borders, no drop shadows, and generous white space.
+- **Desktop layout:** a black announcement strip, then a sticky header with uppercase nav links on the left, the serif wordmark in the centre and the Demo-mode badge and theme toggle on the right. A serif wordmark footer closes each page.
+- **Mobile layout:** a slim top bar and a hairline bottom tab bar (Scan, Results, Saved, Alerts, Settings) in the thumb zone.
+- **Product imagery:** placeholder "studio shots" are generated SVGs in portrait 3:4, with muted backdrops, a soft floor shadow and fine-line silhouettes. Product cells show the brand in caps, the name, then the price.
+  - The product page has a vertical thumbnail rail, a large portrait image with an image counter, a sticky summary column, square size selectors, colour swatches and a full-width black Buy button.
+  - The "Best price" card is an ink-black block (it inverts in dark mode) with a round serif-italic "Cheapest ✓" seal.
+- Fine-line custom SVG icons, a slow image zoom and an underline-slide on hover (off under `prefers-reduced-motion`), loading skeletons, and empty / no-result / error states: no internet, blurry photo, camera permission denied, unsupported or too-large file, rate limited, and 404.
+- Tap targets of at least 44 px, alt text on all images, keyboard-friendly controls and visible focus rings. Every text colour pair meets WCAG AA: muted text is 5.6:1 in light mode and 7.4:1 in dark mode.
 
 ## Tech stack
 
@@ -63,7 +70,7 @@ It runs in **demo mode** out of the box. Everything works with built-in sample d
   - `POST /api/prices`: refreshed best prices for alerts
   - `GET /api/health`: demo or live mode and upload limits (never exposes keys)
 - No chart library (hand-written SVG), no database. Wishlist, history, alerts and settings live in `localStorage`, with JSON backup.
-- Fonts: `@fontsource/space-grotesk` and `@fontsource/space-mono`, self-hosted.
+- Fonts: `@fontsource/bodoni-moda` and `@fontsource/jost`, self-hosted (no Google Fonts requests).
 - The only dependencies are dev dependencies: SvelteKit, Vite, the adapter, svelte-check and the fonts.
 
 ### Provider interface

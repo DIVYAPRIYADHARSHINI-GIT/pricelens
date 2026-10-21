@@ -215,7 +215,7 @@ function makePage(c, targetId, browser) {
       await sleep(150);
     },
     async clickText(selector, text) {
-      const ok = await page.eval(`(() => { const el = [...document.querySelectorAll(${JSON.stringify(selector)})].find((e) => e.innerText.trim().includes(${JSON.stringify(text)})); if (!el) return false; el.scrollIntoView({block:'center'}); el.click(); return true; })()`);
+      const ok = await page.eval(`(() => { const el = [...document.querySelectorAll(${JSON.stringify(selector)})].find((e) => e.textContent.trim().toLowerCase().includes(${JSON.stringify(text)}.toLowerCase())); if (!el) return false; el.scrollIntoView({block:'center'}); el.click(); return true; })()`);
       if (!ok) throw new Error(`clickText: not found ${selector} "${text}"`);
       await sleep(250);
     },

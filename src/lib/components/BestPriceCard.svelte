@@ -1,5 +1,6 @@
 <script lang="ts">
-	// Green "Best price" card with a "Cheapest ✓" stamp.
+	// "Best price" hero card: an ink-black editorial block (inverts in dark mode)
+	// with a "Cheapest ✓" seal, a big serif price and a full-width Buy button.
 	import type { Listing, PriceLabel } from '$lib/types.ts';
 	import { LABEL_TEXT } from '$lib/pricing.ts';
 	import { inr } from '$lib/format.ts';
@@ -12,14 +13,14 @@
 
 <section class="best" aria-labelledby="best-h" data-testid="best-card" data-store={listing.store} data-price={listing.price}>
 	<span class="stamp" aria-hidden="true">Cheapest ✓</span>
-	<div class="row">
-		<h2 id="best-h" class="kicker">Best price</h2>
-		<span class="tag {label}" data-testid="price-label">{LABEL_TEXT[label]}</span>
+	<div class="row kick">
+		<h2 id="best-h" class="kicker k">Best price</h2>
+		<span class="tag" data-testid="price-label">{LABEL_TEXT[label]}</span>
 	</div>
 	<div class="row head">
-		<StoreBadge store={listing.store} name={listing.storeName} size={52} />
-		<div>
-			<b class="store">{listing.storeName}</b>
+		<StoreBadge store={listing.store} name={listing.storeName} size={48} />
+		<div class="who">
+			<span class="store">{listing.storeName}</span>
 			<p class="title">{listing.title}</p>
 		</div>
 	</div>
@@ -27,17 +28,17 @@
 		<span class="price big" data-testid="best-price">{inr(listing.price)}</span>
 		{#if listing.discountPct > 0}
 			<span class="mrp">{inr(listing.mrp)}</span>
-			<span class="tag lowest">{listing.discountPct}% off</span>
+			<span class="offb">{listing.discountPct}% off</span>
 		{/if}
 	</div>
-	<div class="row facts">
-		<Stars rating={listing.rating} count={listing.ratingCount} />
-		<span class="row d"><Icon name="truck" size={18} />{listing.deliveryText}</span>
-		{#if saving > 0}<span class="row d"><Icon name="wallet" size={18} />Save <b class="mono">{inr(saving)}</b> vs priciest store</span>{/if}
-	</div>
-	{#if overBudget}<p class="ob"><Icon name="wallet" size={16} /> Above your budget</p>{/if}
-	<a class="btn big ink block buyBtn" href={listing.url} target="_blank" rel="noopener noreferrer" data-testid="best-buy">
-		Buy on {listing.storeName} <Icon name="external" size={20} /><span class="sr-only"> (opens in a new tab)</span>
+	<ul class="facts">
+		<li><Stars rating={listing.rating} count={listing.ratingCount} /></li>
+		<li><Icon name="truck" size={15} />{listing.deliveryText}</li>
+		{#if saving > 0}<li><Icon name="wallet" size={15} />Save {inr(saving)} vs priciest store</li>{/if}
+		{#if overBudget}<li class="ob"><Icon name="wallet" size={15} /> Above your budget</li>{/if}
+	</ul>
+	<a class="btn big block buyBtn" href={listing.url} target="_blank" rel="noopener noreferrer" data-testid="best-buy">
+		Buy on {listing.storeName} <Icon name="external" size={16} /><span class="sr-only"> (opens in a new tab)</span>
 	</a>
 </section>
 
@@ -46,81 +47,122 @@
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		gap: 12px;
-		padding: 18px;
-		color: #111;
-		background: var(--green);
-		border: var(--bw) solid var(--line);
-		border-radius: 20px;
-		box-shadow: var(--shadow-lg);
+		gap: 16px;
+		padding: 26px 22px 22px;
+		color: var(--on-ink);
+		background: var(--ink);
 	}
-	:global(html[data-theme='dark']) .best {
-		box-shadow: 8px 8px 0 var(--green);
-		border-color: var(--green);
-		background: #0f2a18;
-		color: var(--ink);
+	.kick {
+		gap: 10px;
 	}
-	.kicker {
-		font-size: 0.85rem;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
+	.k {
+		color: inherit;
+		opacity: 0.75;
+	}
+	.best .tag {
+		color: inherit;
+		border-color: color-mix(in srgb, var(--on-ink) 35%, transparent);
 	}
 	.stamp {
 		position: absolute;
-		top: -14px;
-		right: 14px;
-		padding: 6px 12px;
-		font: 700 0.95rem var(--mono);
-		color: #111;
-		background: var(--yellow);
-		border: var(--bw) solid #111;
-		border-radius: 10px;
-		box-shadow: 3px 3px 0 #111;
-		rotate: 6deg;
+		top: 18px;
+		right: 18px;
+		display: grid;
+		place-items: center;
+		width: 76px;
+		height: 76px;
+		padding: 8px;
+		font: italic 400 0.82rem/1.1 var(--serif);
+		text-align: center;
+		color: inherit;
+		border: 1px solid currentColor;
+		border-radius: 50%;
+		rotate: -10deg;
+		outline: 1px solid color-mix(in srgb, var(--on-ink) 35%, transparent);
+		outline-offset: -6px;
 	}
 	.head {
 		flex-wrap: nowrap;
-		gap: 12px;
+		gap: 14px;
+		padding-right: 80px;
+	}
+	.head :global(.sb) {
+		background: transparent;
+		color: inherit;
+		border-color: color-mix(in srgb, var(--on-ink) 35%, transparent);
+	}
+	.who {
+		min-width: 0;
 	}
 	.store {
-		font-size: 1.3rem;
+		font: 500 0.85rem/1.2 var(--sans);
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
 	}
 	.title {
 		font-size: 0.92rem;
-		opacity: 0.85;
+		opacity: 0.8;
 	}
 	.priceRow {
-		gap: 10px;
+		gap: 12px;
+		align-items: baseline;
 	}
 	.price.big {
-		font-size: clamp(2rem, 9vw, 2.6rem);
+		font-family: var(--serif);
+		font-weight: 400;
+		font-size: clamp(2.6rem, 11vw, 3.6rem);
 		line-height: 1;
+		letter-spacing: -0.01em;
 	}
 	.mrp {
 		color: inherit;
-		opacity: 0.7;
+		opacity: 0.6;
+		font-size: 1rem;
+	}
+	.offb {
+		font: 500 0.72rem/1 var(--sans);
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		padding: 5px 8px;
+		color: var(--ink);
+		background: var(--on-ink);
 	}
 	.facts {
-		gap: 8px 16px;
-		font-weight: 500;
+		list-style: none;
+		margin: 0;
+		padding: 14px 0 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px 22px;
+		font-size: 0.88rem;
+		border-top: 1px solid color-mix(in srgb, var(--on-ink) 22%, transparent);
 	}
-	.d {
-		gap: 5px;
-		flex-wrap: nowrap;
+	.facts li {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+	}
+	.facts :global(.muted) {
+		color: inherit;
+		opacity: 0.7;
 	}
 	.ob {
-		display: inline-flex;
-		gap: 6px;
-		align-items: center;
-		font-weight: 700;
+		font-weight: 500;
 	}
 	.buyBtn {
 		margin-top: 4px;
-		--btn-bg: #111;
-		--btn-fg: #fff;
+		color: var(--ink);
+		background: var(--on-ink);
+		border-color: var(--on-ink);
 	}
-	:global(html[data-theme='dark']) .buyBtn {
-		--btn-bg: var(--green);
-		--btn-fg: #0a0a0a;
+	.buyBtn:hover {
+		color: var(--on-ink);
+		background: transparent;
+		border-color: var(--on-ink);
+	}
+	@media (min-width: 640px) {
+		.best {
+			padding: 32px 30px 28px;
+		}
 	}
 </style>

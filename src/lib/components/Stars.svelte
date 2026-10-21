@@ -5,8 +5,8 @@
 
 {#if rating > 0}
 	<span class="stars" aria-label="Rated {rating.toFixed(1)} out of 5{count ? ` from ${count} reviews` : ''}">
-		<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z" fill="#FFD60A" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" /></svg>
-		<b class="mono">{rating.toFixed(1)}</b>
+		<svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4L2.7 9.5l6.5-.7z" fill="currentColor" /></svg>
+		<b>{rating.toFixed(1)}</b>
 		{#if count}<span class="muted">({fmt(count)})</span>{/if}
 	</span>
 {:else}
@@ -18,7 +18,11 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 4px;
-		font-size: 0.9rem;
+		font-size: 0.85rem;
 		white-space: nowrap;
+		font-variant-numeric: tabular-nums;
+	}
+	b {
+		font-weight: 500;
 	}
 </style>

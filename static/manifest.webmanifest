@@ -3,7 +3,7 @@
 	"short_name": "PriceLens",
 	"start_url": "/",
 	"display": "standalone",
-	"background_color": "#FFF8E7",
-	"theme_color": "#FFD60A",
+	"background_color": "#F7F5F0",
+	"theme_color": "#111111",
 	"icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
 }

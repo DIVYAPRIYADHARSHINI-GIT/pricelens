@@ -17,7 +17,7 @@
 
 	async function shareLink() {
 		const ok = await copyText(link);
-		ui.toast(ok ? 'Link copied - paste it anywhere!' : "Couldn't copy - long-press the address bar to copy.", ok ? 'ok' : 'err');
+		ui.toast(ok ? 'Link copied - paste it anywhere.' : "Couldn't copy - long-press the address bar to copy.", ok ? 'ok' : 'err');
 	}
 	async function nativeShare() {
 		try {
@@ -34,11 +34,11 @@
 </script>
 
 <div class="share" data-testid="share-bar">
-	<button type="button" class="btn sm blue wobble" onclick={shareLink} data-testid="share-link"><Icon name="link" size={18} /> Share result</button>
-	<a class="btn sm green wobble" href={whatsappUrl(message)} target="_blank" rel="noopener noreferrer" data-testid="share-whatsapp"><Icon name="whatsapp" size={18} /> Share on WhatsApp<span class="sr-only"> (opens in a new tab)</span></a>
-	<button type="button" class="btn sm wobble" onclick={copyComparison} data-testid="copy-comparison"><Icon name="copy" size={18} /> Copy comparison</button>
+	<button type="button" class="btn sm primary" onclick={shareLink} data-testid="share-link"><Icon name="link" size={16} /> Share result</button>
+	<a class="btn sm" href={whatsappUrl(message)} target="_blank" rel="noopener noreferrer" data-testid="share-whatsapp"><Icon name="whatsapp" size={16} /> WhatsApp<span class="sr-only"> - share on WhatsApp (opens in a new tab)</span></a>
+	<button type="button" class="btn sm" onclick={copyComparison} data-testid="copy-comparison"><Icon name="copy" size={16} /> Copy comparison</button>
 	{#if canShare}
-		<button type="button" class="btn sm icon-only" onclick={nativeShare} aria-label="More share options" data-testid="share-native"><Icon name="share" size={18} /></button>
+		<button type="button" class="btn sm icon-only quiet" onclick={nativeShare} aria-label="More share options" data-testid="share-native"><Icon name="share" size={16} /></button>
 	{/if}
 </div>
 
@@ -46,6 +46,6 @@
 	.share {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 10px;
+		gap: 8px;
 	}
 </style>

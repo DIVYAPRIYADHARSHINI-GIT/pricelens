@@ -1,9 +1,10 @@
 <script lang="ts">
-	import '@fontsource/space-grotesk/400.css';
-	import '@fontsource/space-grotesk/500.css';
-	import '@fontsource/space-grotesk/700.css';
-	import '@fontsource/space-mono/400.css';
-	import '@fontsource/space-mono/700.css';
+	// Editorial type: Bodoni Moda (Didone display serif) + Jost (geometric sans UI).
+	import '@fontsource/bodoni-moda/400.css';
+	import '@fontsource/bodoni-moda/500.css';
+	import '@fontsource/bodoni-moda/400-italic.css';
+	import '@fontsource/jost/400.css';
+	import '@fontsource/jost/500.css';
 	import '../app.css';
 	import { onMount } from 'svelte';
 	import Nav from '$lib/components/Nav.svelte';
@@ -56,7 +57,7 @@
 	<div class="main-col">
 		{#if !ui.online}
 			<div class="offline" role="status" data-testid="offline-banner">
-				<Icon name="wifiOff" size={20} />
+				<Icon name="wifiOff" size={18} />
 				<span>You're offline. Saved items still work - searching needs internet.</span>
 			</div>
 		{/if}
@@ -65,14 +66,19 @@
 				{@render children()}
 			{:else}
 				<div class="page" data-testid="loading" aria-busy="true">
-					<div class="skeleton" style="height:56px;width:min(420px,80%)"></div>
-					<div class="skeleton" style="height:160px"></div>
+					<div class="skeleton" style="height:64px;width:min(460px,80%)"></div>
 					<div class="skeleton" style="height:220px"></div>
+					<div class="skeleton" style="height:180px"></div>
 				</div>
 			{/if}
 		</main>
 	</div>
 </div>
+<footer class="foot" aria-label="About PriceLens">
+	<span class="fwm">PriceLens</span>
+	<span class="kicker">Snap · Compare · Save</span>
+	<span class="muted small">Prices are indicative and may change on the store's site.</span>
+</footer>
 <Toasts />
 <ConfirmDialog />
 
@@ -82,12 +88,12 @@
 		left: -999px;
 		top: 8px;
 		z-index: 100;
-		padding: 10px 16px;
-		font-weight: 700;
-		color: #111;
-		background: var(--yellow);
-		border: var(--bw) solid var(--line);
-		border-radius: 12px;
+		padding: 12px 18px;
+		font: 500 0.75rem/1 var(--sans);
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--on-ink);
+		background: var(--ink);
 	}
 	.skip:focus {
 		left: 8px;
@@ -104,19 +110,35 @@
 	.offline {
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		gap: 10px;
 		padding: 10px 16px;
-		font-weight: 700;
-		color: #111;
-		background: var(--orange);
-		border-bottom: var(--bw) solid var(--line);
+		font: 500 0.74rem/1.3 var(--sans);
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--on-ink);
+		background: var(--sale);
+	}
+	.foot {
+		display: none;
 	}
 	@media (min-width: 900px) {
-		.shell {
+		.foot {
 			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 8px;
+			padding: 40px 24px 48px;
+			border-top: 1px solid var(--hair);
+			text-align: center;
 		}
-		.main-col {
-			flex: 1;
+		.fwm {
+			font-family: var(--serif);
+			font-size: 2.4rem;
+			line-height: 1;
+		}
+		.small {
+			font-size: 0.85rem;
 		}
 	}
 </style>

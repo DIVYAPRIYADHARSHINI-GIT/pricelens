@@ -1,5 +1,7 @@
 <script lang="ts">
-	// Scan / search home: camera + upload + drag-and-drop, text search, sample photos.
+	// Scan / search home, styled like a fashion campaign landing page:
+	// serif hero + camera/upload actions (drag-and-drop on desktop), an underline
+	// search field, a "lookbook" of sample photos as portrait tiles and recent scans.
 	import { goto } from '$app/navigation';
 	import Icon from '$lib/components/Icon.svelte';
 	import StateCard from '$lib/components/StateCard.svelte';
@@ -20,6 +22,7 @@
 	let dragDepth = 0;
 
 	const samples = SAMPLE_ART.map((s) => ({ ...s, uri: artUri(s.art) }));
+	const heroImg = artUri({ ...SAMPLE_ART[0].art, variant: 0 });
 	const recent = $derived(store.data.history.slice(0, 3));
 
 	function pick(e: Event) {
@@ -93,84 +96,95 @@
 <svelte:window ondragenter={onDragEnter} ondragover={(e) => e.dataTransfer?.types.includes('Files') && e.preventDefault()} ondragleave={onDragLeave} ondrop={onDrop} />
 
 <div class="page home">
-	<section class="hero">
-		<p class="kicker tag demo-k">Visual shopping search</p>
-		<h1 data-testid="page-title">Snap. Compare. <span class="hl">Save.</span></h1>
-		<p class="lead">Take a photo of something you like - PriceLens shows which stores sell it, <b>cheapest first</b>, plus similar and cheaper picks.</p>
-	</section>
+	<!-- Campaign hero -->
+	<section class="hero" class:dragging aria-label="Scan or upload a photo" data-testid="dropzone">
+		<div class="copy">
+			<span class="kicker">Visual shopping search · New season</span>
+			<h1 data-testid="page-title">Snap. Compare. <em>Save.</em></h1>
+			<p class="lead">Photograph a piece you love. We find the stores that sell it — <em>cheapest first</em> — with similar styles and smarter buys.</p>
 
-	<!-- Drop zone + main actions (bottom half / thumb zone on mobile) -->
-	<section class="scan card" class:dragging aria-label="Scan or upload a photo" data-testid="dropzone">
-		<div class="dz-art" aria-hidden="true">
-			<svg viewBox="0 0 120 90" width="120" height="90"><rect x="6" y="14" width="108" height="70" rx="14" fill="var(--yellow)" stroke="currentColor" stroke-width="5" /><rect x="40" y="4" width="40" height="16" rx="6" fill="var(--pink)" stroke="currentColor" stroke-width="5" /><circle cx="60" cy="49" r="20" fill="var(--blue)" stroke="currentColor" stroke-width="5" /><circle cx="60" cy="49" r="8" fill="var(--surface)" stroke="currentColor" stroke-width="4" /></svg>
+			<div class="actions">
+				<button type="button" class="btn big primary" onclick={openCamera} data-testid="scan-camera">
+					<Icon name="camera" size={20} /> Scan with camera
+				</button>
+				<button type="button" class="btn big" onclick={() => uploadInput?.click()} data-testid="upload-photo">
+					<Icon name="upload" size={20} /> Upload photo
+				</button>
+			</div>
+			<p class="dz-text muted"><span class="desk">{dragging ? 'Drop your photo to scan it' : 'Or drag & drop a product photo anywhere on this page'}</span></p>
+			<p class="fine muted"><Icon name="lock" size={13} /> Photos are resized on your device and never stored on our server.</p>
 		</div>
-		<p class="dz-text"><b>{dragging ? 'Drop your photo here!' : 'Drag & drop a product photo'}</b><span class="muted desk">{' '}or use the buttons below</span></p>
-
-		<div class="actions">
-			<button type="button" class="btn big yellow block wobble" onclick={openCamera} data-testid="scan-camera">
-				<Icon name="camera" size={28} stroke={2.6} /> Scan with camera
-			</button>
-			<button type="button" class="btn big pink block wobble" onclick={() => uploadInput?.click()} data-testid="upload-photo">
-				<Icon name="upload" size={26} stroke={2.6} /> Upload photo
-			</button>
-		</div>
+		<figure class="visual" aria-hidden="true">
+			<img src={heroImg} alt="" width="240" height="320" />
+			<figcaption><span class="kicker">Look 01</span><span>Floral fit &amp; flare — from <b class="price">₹549</b></span></figcaption>
+		</figure>
 		<input bind:this={cameraInput} class="sr-only" type="file" accept="image/*" capture="environment" onchange={pick} tabindex="-1" aria-hidden="true" data-testid="camera-input" />
 		<input bind:this={uploadInput} class="sr-only" type="file" accept="image/*" onchange={pick} tabindex="-1" aria-hidden="true" data-testid="file-input" />
-		<p class="muted fine"><Icon name="lock" size={14} /> Photos are resized on your phone and never stored on our server.</p>
 	</section>
 
 	{#if cameraDenied}
 		<StateCard icon="camera" tone="orange" title="Camera access is blocked" message="PriceLens can't open your camera because permission was denied. Allow camera access for this site in your browser settings (tap the lock icon next to the address), or upload a photo instead." testid="camera-denied">
-			<button type="button" class="btn pink" onclick={() => uploadInput?.click()}><Icon name="upload" size={18} /> Upload photo instead</button>
-			<button type="button" class="btn" onclick={() => ((cameraDenied = false), cameraInput?.click())}>Try camera again</button>
+			<button type="button" class="btn primary" onclick={() => uploadInput?.click()}><Icon name="upload" size={16} /> Upload photo instead</button>
+			<button type="button" class="btn quiet" onclick={() => ((cameraDenied = false), cameraInput?.click())}>Try camera again</button>
 		</StateCard>
 	{/if}
 
-	<form class="card textsearch" onsubmit={submitText} role="search" data-testid="text-search">
-		<label for="q" class="tlabel">or type what you're looking for</label>
+	<!-- Search -->
+	<form class="textsearch" onsubmit={submitText} role="search" data-testid="text-search">
+		<label for="q" class="kicker">Or type what you're looking for</label>
 		<div class="ts-row">
-			<input id="q" class="input" type="search" placeholder="e.g. floral summer dress" bind:value={text} maxlength="120" autocomplete="off" enterkeyhint="search" data-testid="text-input" />
-			<button class="btn blue" type="submit" data-testid="text-submit"><Icon name="search" size={20} /> Search</button>
+			<Icon name="search" size={20} />
+			<input id="q" class="input big-in" type="search" placeholder="Floral summer dress, white sneakers…" bind:value={text} maxlength="120" autocomplete="off" enterkeyhint="search" data-testid="text-input" />
+			<button class="btn primary" type="submit" data-testid="text-submit">Search</button>
 		</div>
-		<div class="chips" role="group" aria-label="Quick categories">
+		<div class="chips" role="group" aria-label="Shop by category">
 			{#each CATEGORIES.filter((c) => c !== 'other') as c (c)}
 				<button type="button" class="chip" onclick={() => search.fromText('', c as Category)} data-testid="quick-{c}">{CATEGORY_LABEL[c]}</button>
 			{/each}
 		</div>
 	</form>
 
+	<!-- Lookbook of sample photos -->
 	<section class="stack" aria-labelledby="samples-h">
-		<div class="spread">
-			<h2 id="samples-h">No photo handy? Try a sample</h2>
-			<span class="tag">Placeholder art</span>
+		<div class="sec-head">
+			<div>
+				<span class="kicker">No photo handy?</span>
+				<h2 id="samples-h">The sample lookbook</h2>
+			</div>
+			<span class="muted fine">Tap a look to scan it · placeholder art</span>
 		</div>
 		<div class="samples">
-			{#each samples as s (s.key)}
-				<button type="button" class="sample card wobble" onclick={() => trySample(s.key, s.uri, s.label)} data-testid="sample-{s.key}">
-					<img src={s.uri} alt="Sample: {s.label}" width="96" height="96" />
-					<span>{s.label}</span>
+			{#each samples as s, i (s.key)}
+				<button type="button" class="sample" onclick={() => trySample(s.key, s.uri, s.label)} data-testid="sample-{s.key}">
+					<span class="ph zoom"><img src={s.uri} alt="Sample: {s.label}" width="240" height="320" /></span>
+					<span class="no kicker">Look {String(i + 1).padStart(2, '0')}</span>
+					<span class="sl">{s.label}</span>
 				</button>
 			{/each}
-			<button type="button" class="sample card wobble" onclick={() => trySample('blurry', samples[0].uri, 'blurry', true)} data-testid="sample-blurry">
-				<img src={samples[0].uri} alt="Sample: a blurry shot of a dress" width="96" height="96" style="filter: blur(4px)" />
-				<span>Blurry shot</span>
+			<button type="button" class="sample" onclick={() => trySample('blurry', samples[0].uri, 'blurry', true)} data-testid="sample-blurry">
+				<span class="ph zoom"><img src={samples[0].uri} alt="Sample: a blurry shot of a dress" width="240" height="320" style="filter: blur(5px)" /></span>
+				<span class="no kicker">Look 06</span>
+				<span class="sl">Blurry shot</span>
 			</button>
 		</div>
 	</section>
 
 	{#if recent.length}
 		<section class="stack" aria-labelledby="recent-h">
-			<div class="spread">
-				<h2 id="recent-h">Recent scans</h2>
-				<a class="btn sm" href="/saved#history">See all</a>
+			<div class="sec-head">
+				<div>
+					<span class="kicker">Picked up where you left off</span>
+					<h2 id="recent-h">Recent scans</h2>
+				</div>
+				<a class="textlink" href="/saved#history">See all</a>
 			</div>
 			<ul class="recent">
 				{#each recent as h (h.id)}
 					<li>
-						<button type="button" class="rc card flat" onclick={() => search.rerun(h)} data-testid="recent-item">
-							{#if h.thumb}<img class="thumb" src={h.thumb} alt="Scan of {h.label}" width="48" height="48" />{:else}<span class="thumb ph"><Icon name="search" size={20} /></span>{/if}
-							<span class="rt"><b>{h.label}</b><small class="muted">{timeAgo(h.at)}{h.bestPrice ? ` · from ${inr(h.bestPrice)}` : ''}</small></span>
-							<Icon name="refresh" size={18} />
+						<button type="button" class="rc" onclick={() => search.rerun(h)} data-testid="recent-item">
+							{#if h.thumb}<img class="thumb" src={h.thumb} alt="Scan of {h.label}" width="48" height="64" />{:else}<span class="thumb ph2"><Icon name="search" size={18} /></span>{/if}
+							<span class="rt"><span class="rl">{h.label}</span><small class="muted">{timeAgo(h.at)}{h.bestPrice ? ` · from ${inr(h.bestPrice)}` : ''}</small></span>
+							<Icon name="chevronRight" size={18} />
 						</button>
 					</li>
 				{/each}
@@ -185,144 +199,174 @@
 
 <style>
 	.home {
-		gap: 22px;
+		gap: 44px;
 	}
 	.hero {
+		display: grid;
+		gap: 28px;
+		padding-bottom: 36px;
+		border-bottom: 1px solid var(--hair);
+		transition: background-color 0.2s var(--ease);
+	}
+	.hero.dragging {
+		background: var(--surface-2);
+	}
+	.copy {
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
+		gap: 18px;
 	}
-	.demo-k {
-		align-self: flex-start;
-		background: var(--blue);
-		color: #111;
-		rotate: -2deg;
+	.hero h1 {
+		font-size: clamp(3rem, 13vw, 6.4rem);
+		line-height: 0.95;
+		letter-spacing: -0.02em;
 	}
-	.hl {
-		background: var(--yellow);
-		color: #111;
-		padding: 0 8px;
-		border: var(--bw) solid var(--line);
-		border-radius: 12px;
-		box-shadow: var(--shadow-sm);
+	.hero h1 em {
 		display: inline-block;
-		rotate: -2deg;
 	}
 	.lead {
-		font-size: 1.05rem;
+		max-width: 44ch;
+		font-size: 1.08rem;
 		color: var(--ink-2);
-		max-width: 52ch;
 	}
-	.scan {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 14px;
-		padding: 22px 16px;
-		border-style: dashed;
-		transition: background 0.12s;
-	}
-	.scan.dragging {
-		background: var(--surface-2);
-		border-style: solid;
-	}
-	.dz-art {
-		color: var(--line);
-	}
-	.dz-text {
-		text-align: center;
-	}
-	.desk {
-		display: none;
+	.lead em {
+		font-size: 1.12em;
 	}
 	.actions {
 		display: grid;
-		gap: 14px;
-		width: 100%;
-		max-width: 520px;
+		gap: 10px;
+		margin-top: 6px;
+	}
+	.dz-text {
+		font-size: 0.88rem;
+	}
+	.desk {
+		display: none;
 	}
 	.fine {
 		display: inline-flex;
 		align-items: center;
 		gap: 6px;
-		font-size: 0.85rem;
-		text-align: center;
+		font-size: 0.82rem;
 	}
+	.visual {
+		display: none;
+		margin: 0;
+	}
+	.visual img {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 3 / 4;
+		object-fit: cover;
+	}
+	.visual figcaption {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 10px;
+		padding-top: 10px;
+		font-size: 0.88rem;
+	}
+
 	.textsearch {
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
-	}
-	.tlabel {
-		font-weight: 700;
-		font-size: 1.05rem;
+		gap: 14px;
 	}
 	.ts-row {
 		display: flex;
-		gap: 10px;
+		align-items: center;
+		gap: 12px;
+		border-bottom: 1px solid var(--ink);
 	}
-	.ts-row .input {
+	.ts-row .big-in {
 		flex: 1;
 		min-width: 0;
+		border-bottom: 0;
+		font-family: var(--serif);
+		font-size: clamp(1.15rem, 4vw, 1.6rem);
+		min-height: 60px;
+	}
+	.ts-row .big-in:focus-visible {
+		outline: none;
+	}
+	.ts-row:focus-within {
+		border-bottom-width: 2px;
 	}
 	.chips {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 8px;
 	}
+
 	.samples {
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 12px;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 22px 14px;
 	}
 	.sample {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		gap: 6px;
-		padding: 8px;
-		font: 700 0.85rem var(--font);
+		align-items: flex-start;
+		gap: 4px;
+		padding: 0;
+		font: inherit;
 		color: var(--ink);
+		text-align: left;
+		background: none;
+		border: 0;
 		cursor: pointer;
-		box-shadow: var(--shadow-sm);
-		text-align: center;
+	}
+	.sample .ph {
+		display: block;
+		width: 100%;
+		aspect-ratio: 3 / 4;
+		margin-bottom: 8px;
+		background: var(--surface-2);
 	}
 	.sample img {
 		width: 100%;
-		height: auto;
-		border: 2px solid var(--line);
-		border-radius: 10px;
-		overflow: hidden;
+		height: 100%;
+		object-fit: cover;
 	}
-	.sample:active {
-		transform: translate(3px, 3px);
-		box-shadow: none;
+	.sl {
+		font-family: var(--serif);
+		font-size: 1.12rem;
 	}
+	.sample:hover .sl {
+		text-decoration: underline;
+		text-underline-offset: 4px;
+		text-decoration-thickness: 1px;
+	}
+
 	.recent {
 		list-style: none;
 		margin: 0;
 		padding: 0;
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
 	}
 	.rc {
 		width: 100%;
 		display: flex;
 		align-items: center;
-		gap: 12px;
-		padding: 8px 12px;
+		gap: 14px;
+		padding: 12px 0;
 		min-height: 64px;
 		font: inherit;
 		color: var(--ink);
 		text-align: left;
+		background: none;
+		border: 0;
+		border-bottom: 1px solid var(--hair);
 		cursor: pointer;
 	}
 	.rc .thumb {
 		width: 48px;
-		height: 48px;
+		height: 64px;
+		aspect-ratio: auto;
 	}
-	.ph {
+	.ph2 {
 		display: grid;
 		place-items: center;
 	}
@@ -332,10 +376,17 @@
 		flex-direction: column;
 		min-width: 0;
 	}
-	.rt b {
+	.rl {
+		font-family: var(--serif);
+		font-size: 1.1rem;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+	.rc:hover .rl {
+		text-decoration: underline;
+		text-underline-offset: 4px;
+		text-decoration-thickness: 1px;
 	}
 	.drop-overlay {
 		position: fixed;
@@ -343,33 +394,39 @@
 		z-index: 80;
 		display: grid;
 		place-items: center;
-		background: rgba(255, 214, 10, 0.35);
+		background: color-mix(in srgb, var(--bg) 70%, transparent);
 		pointer-events: none;
 	}
 	.drop-overlay span {
-		padding: 18px 28px;
-		font-size: 1.6rem;
-		font-weight: 700;
-		color: #111;
-		background: var(--yellow);
-		border: var(--bw) solid #111;
-		border-radius: 20px;
-		box-shadow: var(--shadow-lg);
+		padding: 22px 34px;
+		font: italic 400 2rem/1 var(--serif);
+		color: var(--on-ink);
+		background: var(--ink);
 	}
 	@media (min-width: 640px) {
 		.samples {
-			grid-template-columns: repeat(6, 1fr);
+			grid-template-columns: repeat(3, 1fr);
 		}
 		.actions {
-			grid-template-columns: 1fr 1fr;
+			grid-template-columns: auto auto;
+			justify-content: start;
 		}
 		.desk {
 			display: inline;
 		}
 	}
 	@media (min-width: 900px) {
-		.scan {
-			padding: 34px;
+		.hero {
+			grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
+			align-items: end;
+			gap: 56px;
+			padding: 24px 0 48px;
+		}
+		.visual {
+			display: block;
+		}
+		.samples {
+			grid-template-columns: repeat(6, 1fr);
 		}
 	}
 </style>

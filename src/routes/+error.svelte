@@ -14,7 +14,7 @@
 		message={notFound ? "We couldn't find that page. Let's get you back to bargain hunting." : (page.error?.message ?? 'Please try again.')}
 		testid="error-page"
 	>
-		<a class="btn yellow" href="/"><Icon name="camera" size={18} /> Back to Scan</a>
+		<a class="btn primary" href="/"><Icon name="camera" size={16} /> Back to Scan</a>
 	</StateCard>
 </div>
 

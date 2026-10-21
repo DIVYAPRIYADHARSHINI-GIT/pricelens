@@ -35,7 +35,7 @@
 		<div class="chips">
 			{#each CATEGORIES as c (c)}
 				<button type="button" class="chip" aria-pressed={cat === c} onclick={() => ((cat = cat === c ? null : c), (err = ''))} data-testid="cat-{c}">
-					{#if cat === c}<Icon name="check" size={16} stroke={3} />{/if}{CATEGORY_LABEL[c]}
+					{#if cat === c}<Icon name="check" size={14} />{/if}{CATEGORY_LABEL[c]}
 				</button>
 			{/each}
 		</div>
@@ -46,8 +46,8 @@
 	</label>
 	{#if err}<p class="err" role="alert">{err}</p>{/if}
 	<div class="row">
-		<button type="submit" class="btn yellow" data-testid="edit-submit"><Icon name="search" size={18} /> {submitLabel}</button>
-		{#if oncancel}<button type="button" class="btn" onclick={oncancel}>Cancel</button>{/if}
+		<button type="submit" class="btn primary" data-testid="edit-submit"><Icon name="search" size={16} /> {submitLabel}</button>
+		{#if oncancel}<button type="button" class="btn quiet" onclick={oncancel}>Cancel</button>{/if}
 	</div>
 </form>
 
@@ -63,22 +63,15 @@
 		padding: 0;
 	}
 	legend {
-		font-weight: 700;
-		margin-bottom: 8px;
+		margin-bottom: 10px;
+		font: 500 0.7rem/1.2 var(--sans);
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--muted);
 	}
 	.chips {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 8px;
-	}
-	.err {
-		font-weight: 700;
-		color: var(--ink);
-		background: var(--red);
-		color: #111;
-		padding: 6px 10px;
-		border: 2px solid var(--line);
-		border-radius: 10px;
-		align-self: flex-start;
 	}
 </style>

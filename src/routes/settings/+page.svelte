@@ -78,32 +78,32 @@
 </script>
 
 <div class="page settings">
-	<h1 data-testid="page-title">Settings</h1>
+	<header class="pg"><span class="kicker">Preferences & data</span><h1 data-testid="page-title">Settings</h1></header>
 
-	<section class="card stack" aria-labelledby="budget-h" data-testid="budget-settings">
-		<h2 id="budget-h"><Icon name="wallet" /> My budget</h2>
+	<section class="sect" aria-labelledby="budget-h" data-testid="budget-settings">
+		<header class="sh"><span class="kicker">01</span><h2 id="budget-h">My budget</h2></header>
 		<p class="muted">Results outside your budget are dimmed. Switch on “Hide” to remove them completely.</p>
 		<form class="bform" onsubmit={saveBudget}>
 			<label class="field"><span>Min price (₹)</span><input class="input mono" type="number" inputmode="numeric" min="0" step="1" placeholder="0" bind:value={minIn} data-testid="budget-min" /></label>
 			<label class="field"><span>Max price (₹)</span><input class="input mono" type="number" inputmode="numeric" min="0" step="1" placeholder="No limit" bind:value={maxIn} data-testid="budget-max" /></label>
 			<div class="row bbtns">
-				<button class="btn green" type="submit" data-testid="budget-save"><Icon name="check" size={18} /> Save budget</button>
-				<button class="btn" type="button" onclick={clearBudget}>Clear</button>
+				<button class="btn primary" type="submit" data-testid="budget-save"><Icon name="check" size={16} /> Save budget</button>
+				<button class="btn quiet" type="button" onclick={clearBudget}>Clear</button>
 			</div>
 		</form>
 		{#if budgetErr}<p class="err" role="alert">{budgetErr}</p>{/if}
 		<label class="switch"><input type="checkbox" checked={s.hideOutsideBudget} onchange={(e) => store.updateSettings({ hideOutsideBudget: e.currentTarget.checked })} data-testid="settings-hide-budget" /> Hide results outside my budget</label>
 	</section>
 
-	<section class="card stack" aria-labelledby="stores-h" data-testid="store-settings">
-		<h2 id="stores-h"><Icon name="store" /> Stores</h2>
+	<section class="sect" aria-labelledby="stores-h" data-testid="store-settings">
+		<header class="sh"><span class="kicker">02</span><h2 id="stores-h">Stores</h2></header>
 		<p class="muted">Switch off stores you don't want to see in results.</p>
 		<ul class="stores">
 			{#each STORES as st (st.id)}
 				{@const on = !s.hiddenStores.includes(st.id)}
 				<li>
 					<label class="switch srow">
-						<StoreBadge store={st.id} size={36} />
+						<StoreBadge store={st.id} size={34} />
 						<span class="sn">{st.name}</span>
 						<input type="checkbox" checked={on} onchange={() => store.toggleStore(st.id)} aria-label="Show {st.name}" data-testid="store-toggle-{st.id}" />
 					</label>
@@ -112,13 +112,13 @@
 		</ul>
 	</section>
 
-	<section class="card stack" aria-labelledby="look-h">
-		<h2 id="look-h"><Icon name={ui.theme === 'dark' ? 'moon' : 'sun'} /> Appearance</h2>
+	<section class="sect" aria-labelledby="look-h">
+		<header class="sh"><span class="kicker">03</span><h2 id="look-h">Appearance</h2></header>
 		<label class="switch"><input type="checkbox" checked={ui.theme === 'dark'} onchange={() => ui.toggleTheme()} data-testid="settings-dark" /> Dark mode</label>
 	</section>
 
-	<section class="card stack" id="data-source" aria-labelledby="src-h">
-		<h2 id="src-h"><Icon name="sparkle" /> Data source</h2>
+	<section class="sect" id="data-source" aria-labelledby="src-h">
+		<header class="sh"><span class="kicker">04</span><h2 id="src-h">Data source</h2></header>
 		<p class="row"><ModeBadge /></p>
 		{#if ui.mode === 'demo'}
 			<p>PriceLens is running in <b>demo mode</b> with built-in sample products, prices and placeholder images - no API keys needed. Photo detection matches your photo's main colours to a sample category; you can always correct it.</p>
@@ -127,26 +127,26 @@
 		{/if}
 	</section>
 
-	<section class="card stack" aria-labelledby="bk-h">
-		<h2 id="bk-h"><Icon name="download" /> Backup</h2>
+	<section class="sect" aria-labelledby="bk-h">
+		<header class="sh"><span class="kicker">05</span><h2 id="bk-h">Backup</h2></header>
 		<p class="muted">Everything is stored in this browser (localStorage). Export a JSON backup to move it to another device.</p>
 		<div class="row">
-			<button type="button" class="btn blue" onclick={exportBackup} data-testid="export-backup"><Icon name="download" size={18} /> Export JSON</button>
-			<button type="button" class="btn" onclick={() => fileInput?.click()} data-testid="import-backup"><Icon name="upload" size={18} /> Import JSON</button>
+			<button type="button" class="btn primary" onclick={exportBackup} data-testid="export-backup"><Icon name="download" size={16} /> Export JSON</button>
+			<button type="button" class="btn" onclick={() => fileInput?.click()} data-testid="import-backup"><Icon name="upload" size={16} /> Import JSON</button>
 			<input bind:this={fileInput} type="file" accept="application/json,.json" class="sr-only" tabindex="-1" aria-hidden="true" onchange={importBackup} data-testid="import-input" />
 		</div>
 		<p class="muted fine mono">{store.data.wishlist.length} saved · {store.data.history.length} scans · {store.data.alerts.length} alerts</p>
 		{#if !store.storageOk}<p class="err" role="alert">Storage is full or blocked - recent changes may not be saved.</p>{/if}
 	</section>
 
-	<section class="card stack danger" aria-labelledby="fresh-h">
-		<h2 id="fresh-h"><Icon name="trash" /> Start fresh</h2>
+	<section class="sect danger" aria-labelledby="fresh-h">
+		<header class="sh"><span class="kicker">06</span><h2 id="fresh-h">Start fresh</h2></header>
 		<p>Clear search history, wishlist and price alerts on this device.</p>
-		<button type="button" class="btn pink" onclick={startFresh} data-testid="start-fresh"><Icon name="trash" size={18} /> Start fresh</button>
+		<button type="button" class="btn danger" onclick={startFresh} data-testid="start-fresh"><Icon name="trash" size={16} /> Start fresh</button>
 	</section>
 
-	<section class="card stack privacy" aria-labelledby="priv-h" data-testid="privacy-note">
-		<h2 id="priv-h"><Icon name="lock" /> Privacy</h2>
+	<section class="sect privacy" aria-labelledby="priv-h" data-testid="privacy-note">
+		<header class="sh"><span class="kicker">07</span><h2 id="priv-h">Privacy</h2></header>
 		<p>Your photos are resized and compressed on your device, then <b>processed in memory only</b> to find matching products. <b>Uploaded images are never stored on our server.</b> Your wishlist, history, alerts and settings stay in this browser - there is no account and no database.</p>
 	</section>
 
@@ -157,17 +157,36 @@
 
 <style>
 	.settings {
-		max-width: 760px;
+		max-width: 880px;
+		gap: 0;
 	}
-	h2 {
+	.pg {
 		display: flex;
-		align-items: center;
-		gap: 8px;
+		flex-direction: column;
+		gap: 10px;
+		padding-bottom: 28px;
+	}
+	.sect {
+		display: grid;
+		gap: 14px;
+		padding: 28px 0;
+		border-top: 1px solid var(--hair);
+	}
+	.sh {
+		display: flex;
+		align-items: baseline;
+		gap: 14px;
+	}
+	.sh h2 {
+		font-size: clamp(1.4rem, 4vw, 1.8rem);
+	}
+	.sect > :global(p) {
+		max-width: 60ch;
 	}
 	.bform {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: 12px;
+		gap: 16px;
 		align-items: end;
 	}
 	.bbtns {
@@ -178,42 +197,54 @@
 		margin: 0;
 		padding: 0;
 		display: grid;
-		gap: 6px;
 	}
 	.srow {
 		width: 100%;
 		justify-content: space-between;
-		padding: 4px 0;
-		border-bottom: 2px dashed var(--line);
+		padding: 8px 0;
+		border-bottom: 1px solid var(--hair);
 	}
 	.sn {
 		flex: 1;
-	}
-	.err {
-		font-weight: 700;
-		color: #111;
-		background: var(--red);
-		padding: 6px 10px;
-		border: 2px solid var(--line);
-		border-radius: 10px;
-		align-self: flex-start;
+		font: 500 0.76rem/1.2 var(--sans);
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
 	}
 	.fine {
-		font-size: 0.85rem;
+		font-size: 0.82rem;
 	}
-	.danger {
-		border-style: dashed;
+	.danger h2 {
+		color: var(--sale);
+	}
+	.danger .btn {
+		justify-self: start;
 	}
 	.privacy {
+		padding: 28px;
 		background: var(--surface-2);
+		border-top: 0;
 	}
 	.about {
+		padding-top: 28px;
 		text-align: center;
 	}
 	@media (min-width: 640px) {
+		.sect {
+			grid-template-columns: 220px 1fr;
+			column-gap: 40px;
+		}
+		.sect > :global(*) {
+			grid-column: 2;
+		}
+		.sect > .sh {
+			grid-column: 1;
+			grid-row: 1 / span 6;
+			flex-direction: column;
+			gap: 6px;
+		}
 		.stores {
 			grid-template-columns: 1fr 1fr;
-			column-gap: 24px;
+			column-gap: 28px;
 		}
 		.bform {
 			grid-template-columns: 1fr 1fr auto;

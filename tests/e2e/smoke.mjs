@@ -170,15 +170,15 @@ await step('upload photo -> detect -> results', async () => {
 	const pv = await p.eval(`(async () => { const s = document.querySelector('[data-testid=detected-card] img'); const i = new Image(); i.src = s.src; await i.decode(); return Math.max(i.naturalWidth, i.naturalHeight); })()`);
 	check('upload: resized to max 1024px in browser', pv === 1024, `${pv}px`);
 	check('results: best price card is the cheapest (Meesho ₹549)', /549/.test(await p.text('[data-testid=best-price]')) && (await p.eval("document.querySelector('[data-testid=best-card]').dataset.store")) === 'meesho');
-	check('results: "Cheapest ✓" stamp', /Cheapest ✓/.test(await p.text('[data-testid=best-card]')));
+	check('results: "Cheapest ✓" stamp', /Cheapest ✓/i.test(await p.text('[data-testid=best-card]')));
 	check('results: best Buy opens store in new tab', (await p.eval("(() => { const a = document.querySelector('[data-testid=best-buy]'); return a.target === '_blank' && a.rel.includes('noopener') && a.href.startsWith('https://www.meesho.com'); })()")));
 	check('results: 5 other stores listed', (await p.count('[data-testid=listing]')) === 5);
 	const labels = await p.eval("[...document.querySelectorAll('[data-testid=listing]')].map((l) => l.dataset.label)");
 	check('results: price labels (good deal / above average)', labels.includes('good') && labels.includes('above'), labels.join(','));
-	check('results: best card label "Lowest price"', /Lowest price/.test(await p.text('[data-testid=best-card] [data-testid=price-label]')));
+	check('results: best card label "Lowest price"', /Lowest price/i.test(await p.text('[data-testid=best-card] [data-testid=price-label]')));
 	check('results: indicative-price note', /Prices are indicative and may change/.test(await p.text('[data-testid=indicative-note]')));
 	check('results: similar styles carousel', (await p.count('[data-testid=similar] [data-testid=suggestion]')) >= 3);
-	check('results: cheaper alternatives show savings', (await p.count('[data-testid=cheaper] [data-testid=saving]')) >= 3 && /You save ₹/.test(await p.text('[data-testid=cheaper] [data-testid=saving]')));
+	check('results: cheaper alternatives show savings', (await p.count('[data-testid=cheaper] [data-testid=saving]')) >= 3 && /You save ₹/i.test(await p.text('[data-testid=cheaper] [data-testid=saving]')));
 	await shot(p, 'd-results', true);
 	noErrors(p, 'results');
 	await notFrozen(p, 'results');
@@ -339,7 +339,7 @@ await step('text search + not sure + no results', async () => {
 	await p.fill('[data-testid=text-input]', 'gaming laptop');
 	await p.click('[data-testid=text-submit]');
 	await resultsReady(p);
-	check('text search: unknown -> no-results / Not sure screen', (await p.count('[data-testid=not-sure]')) === 1 && /No results/.test(await p.text('[data-testid=not-sure]')));
+	check('text search: unknown -> no-results / Not sure screen', (await p.count('[data-testid=not-sure]')) === 1 && /No results/i.test(await p.text('[data-testid=not-sure]')));
 	await p.click('[data-testid=cat-phone]');
 	await p.click('[data-testid=edit-submit]');
 	await resultsReady(p);
@@ -347,7 +347,7 @@ await step('text search + not sure + no results', async () => {
 	await nav(p, '/');
 	await p.click('[data-testid=sample-blurry]');
 	await resultsReady(p);
-	check('blurry photo -> "Not sure what this is?"', (await p.count('[data-testid=not-sure]')) === 1 && /Blurry/.test(await p.text('[data-testid=not-sure]')));
+	check('blurry photo -> "Not sure what this is?"', (await p.count('[data-testid=not-sure]')) === 1 && /Blurry/i.test(await p.text('[data-testid=not-sure]')));
 	check('not sure: 8 category chips + text box', (await p.count('[data-testid=not-sure] [data-testid^=cat-]')) === 8 && (await p.count('[data-testid=not-sure] [data-testid=edit-query]')) === 1);
 	await shot(p, 'd-not-sure', true);
 	await p.click('[data-testid=cat-dress]');

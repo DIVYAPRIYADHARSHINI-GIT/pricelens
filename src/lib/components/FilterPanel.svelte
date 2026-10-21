@@ -2,7 +2,6 @@
 	// Sort + filters (store, price range, minimum rating, brand). Pure UI: the parent owns state.
 	import type { Filters, SortKey } from '$lib/pricing.ts';
 	import { inr } from '$lib/format.ts';
-	import Icon from './Icon.svelte';
 
 	let {
 		sort = $bindable(),
@@ -43,7 +42,7 @@
 
 <div class="fp" data-testid="filter-panel">
 	<fieldset>
-		<legend><Icon name="sort" size={18} /> Sort by</legend>
+		<legend>Sort by</legend>
 		<div class="seg" role="radiogroup" aria-label="Sort results">
 			{#each SORTS as s (s.key)}
 				<button type="button" role="radio" aria-checked={sort === s.key} class="chip" class:on={sort === s.key} onclick={() => (sort = s.key)} data-testid="sort-{s.key}">{s.label}</button>
@@ -52,7 +51,7 @@
 	</fieldset>
 
 	<fieldset>
-		<legend><Icon name="store" size={18} /> Stores</legend>
+		<legend>Stores</legend>
 		<div class="chips">
 			{#each stores as s (s.id)}
 				<button type="button" class="chip" aria-pressed={filters.stores.includes(s.id)} onclick={() => (filters.stores = toggle(filters.stores, s.id))} data-testid="f-store-{s.id}">{s.name}</button>
@@ -62,7 +61,7 @@
 	</fieldset>
 
 	<fieldset>
-		<legend><Icon name="wallet" size={18} /> Price range</legend>
+		<legend>Price range</legend>
 		<p class="mono range-val" aria-live="polite"><b>{inr(filters.minPrice)}</b> – <b>{inr(filters.maxPrice)}</b></p>
 		<label class="rl">
 			<span>Min</span>
@@ -75,7 +74,7 @@
 	</fieldset>
 
 	<fieldset>
-		<legend><Icon name="star" size={18} /> Minimum rating</legend>
+		<legend>Minimum rating</legend>
 		<div class="chips">
 			{#each RATINGS as r (r)}
 				<button type="button" class="chip" aria-pressed={filters.minRating === r} onclick={() => (filters.minRating = r)} data-testid="f-rating-{String(r).replace('.', '_')}">{r === 0 ? 'Any' : `${r}★ +`}</button>
@@ -85,7 +84,7 @@
 
 	{#if brands.length > 1}
 		<fieldset>
-			<legend><Icon name="tag" size={18} /> Brand</legend>
+			<legend>Brand</legend>
 			<div class="chips">
 				{#each brands as b (b)}
 					<button type="button" class="chip" aria-pressed={filters.brands.includes(b)} onclick={() => (filters.brands = toggle(filters.brands, b))} data-testid="f-brand">{b}</button>
@@ -94,7 +93,7 @@
 		</fieldset>
 	{/if}
 
-	<button type="button" class="btn sm" onclick={onreset} data-testid="f-reset"><Icon name="refresh" size={16} /> Reset filters</button>
+	<button type="button" class="textlink" onclick={onreset} data-testid="f-reset">Reset filters</button>
 </div>
 
 <style>
@@ -112,12 +111,18 @@
 		gap: 8px;
 		min-width: 0;
 	}
+	fieldset + fieldset {
+		padding-top: 16px;
+		border-top: 1px solid var(--hair);
+	}
 	legend {
 		display: inline-flex;
 		align-items: center;
-		gap: 6px;
-		font-weight: 700;
-		margin-bottom: 8px;
+		gap: 8px;
+		margin-bottom: 10px;
+		font: 500 0.7rem/1.2 var(--sans);
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
 	}
 	.chips,
 	.seg {
@@ -126,21 +131,27 @@
 		gap: 8px;
 	}
 	.chip {
-		font-size: 0.88rem;
-		padding: 8px 12px;
+		font-size: 0.68rem;
+		padding: 0 12px;
 	}
 	.hint {
 		font-size: 0.82rem;
 	}
 	.range-val {
-		font-size: 0.95rem;
+		font-family: var(--serif);
+		font-size: 1.15rem;
+	}
+	.range-val b {
+		font-weight: 400;
 	}
 	.rl {
 		display: grid;
 		grid-template-columns: 38px 1fr;
 		align-items: center;
 		gap: 8px;
-		font-weight: 700;
-		font-size: 0.85rem;
+		font: 500 0.66rem/1 var(--sans);
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--muted);
 	}
 </style>

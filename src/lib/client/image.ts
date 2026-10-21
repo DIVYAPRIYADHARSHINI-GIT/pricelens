@@ -218,19 +218,23 @@ export async function svgToPngFile(svgDataUri: string, name: string, size = 768,
 		img.onerror = () => (clearTimeout(t), rej(new Error('sample decode')));
 		img.src = svgDataUri;
 	});
-	const c = canvas(size, size);
+	// Keep the source aspect ratio (sample art is portrait 3:4); `size` is the long side.
+	const ar = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 1;
+	const w = Math.round(ar >= 1 ? size : size * ar);
+	const h = Math.round(ar >= 1 ? size / ar : size);
+	const c = canvas(w, h);
 	const ctx = c.getContext('2d')!;
 	if (blurPx) {
 		// Portable blur (Safari has no ctx.filter): shrink a lot, then scale back up smoothly.
-		const tiny = canvas(Math.max(8, Math.round(size / blurPx / 2)), Math.max(8, Math.round(size / blurPx / 2)));
+		const tiny = canvas(Math.max(8, Math.round(w / blurPx / 2)), Math.max(8, Math.round(h / blurPx / 2)));
 		const tctx = tiny.getContext('2d')!;
 		tctx.imageSmoothingQuality = 'high';
 		tctx.drawImage(img, 0, 0, tiny.width, tiny.height);
 		ctx.imageSmoothingEnabled = true;
 		ctx.imageSmoothingQuality = 'high';
-		ctx.drawImage(tiny, 0, 0, size, size);
+		ctx.drawImage(tiny, 0, 0, w, h);
 	} else {
-		ctx.drawImage(img, 0, 0, size, size);
+		ctx.drawImage(img, 0, 0, w, h);
 	}
 	const blob = await toBlob(c, 'image/png', 1);
 	return new File([blob], name, { type: 'image/png' });

@@ -21,30 +21,30 @@
 		<h2 id="dlg-title">{ui.confirm.title}</h2>
 		<p>{ui.confirm.message}</p>
 		<div class="row end">
-			<button type="button" class="btn" bind:this={cancelBtn} onclick={() => ui.answer(false)} data-testid="confirm-cancel">Cancel</button>
-			<button type="button" class="btn {ui.confirm.danger ? 'pink' : 'green'}" onclick={() => ui.answer(true)} data-testid="confirm-ok">{ui.confirm.confirmLabel}</button>
+			<button type="button" class="btn quiet" bind:this={cancelBtn} onclick={() => ui.answer(false)} data-testid="confirm-cancel">Cancel</button>
+			<button type="button" class="btn {ui.confirm.danger ? 'danger' : 'primary'}" onclick={() => ui.answer(true)} data-testid="confirm-ok">{ui.confirm.confirmLabel}</button>
 		</div>
 	{/if}
 </dialog>
 
 <style>
 	.dlg {
-		width: min(440px, calc(100vw - 32px));
-		padding: 22px;
+		width: min(460px, calc(100vw - 32px));
+		padding: 32px 28px 24px;
 		color: var(--ink);
-		background: var(--surface);
-		border: var(--bw) solid var(--line);
-		border-radius: 20px;
-		box-shadow: var(--shadow-lg);
+		background: var(--bg);
+		border: 1px solid var(--line);
+		border-radius: 0;
 	}
 	.dlg::backdrop {
-		background: rgba(0, 0, 0, 0.5);
+		background: rgba(10, 10, 10, 0.45);
 	}
 	h2 {
-		margin-bottom: 8px;
+		margin-bottom: 12px;
+		font-size: 1.8rem;
 	}
 	p {
-		margin-bottom: 18px;
+		margin-bottom: 24px;
 		color: var(--ink-2);
 	}
 	.end {

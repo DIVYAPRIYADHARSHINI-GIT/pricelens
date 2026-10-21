@@ -37,48 +37,48 @@
 </script>
 
 <div class="page">
-	<header class="spread">
-		<div class="stack hd">
+	<header class="sec-head top">
+		<div>
+			<span class="kicker">{alerts.length} alert{alerts.length === 1 ? '' : 's'}{reached ? ` · ${reached} reached` : ''}</span>
 			<h1 data-testid="page-title">Price alerts</h1>
-			<p class="muted">{alerts.length} alert{alerts.length === 1 ? '' : 's'}{reached ? ` · ${reached} reached` : ''}</p>
 		</div>
 		{#if alerts.length}
-			<button type="button" class="btn yellow" onclick={refresh} disabled={refreshing} aria-busy={refreshing} data-testid="refresh-alerts">
-				<Icon name="refresh" size={18} class={refreshing ? 'spin' : ''} />
+			<button type="button" class="btn primary" onclick={refresh} disabled={refreshing} aria-busy={refreshing} data-testid="refresh-alerts">
+				<Icon name="refresh" size={16} class={refreshing ? 'spin' : ''} />
 				{refreshing ? 'Checking…' : 'Refresh prices'}
 			</button>
 		{/if}
 	</header>
 
-	<p class="note"><Icon name="bell" size={18} /> Alerts are saved on this device and checked when you tap Refresh. Email or push alerts need a backend (not included).</p>
+	<p class="note"><Icon name="bell" size={16} /> Alerts are saved on this device and checked when you tap Refresh. Email or push alerts need a backend (not included).</p>
 
 	{#if alerts.length === 0}
 		<StateCard icon="bell" tone="yellow" title="No price alerts yet" message="Open a product and tap “Set price alert” to pick a target price." testid="alerts-empty">
-			<a class="btn yellow" href="/"><Icon name="camera" size={18} /> Find a product</a>
+			<a class="btn primary" href="/"><Icon name="camera" size={16} /> Find a product</a>
 		</StateCard>
 	{:else}
 		<ul class="alist" data-testid="alerts">
 			{#each alerts as a (a.id)}
 				{@const diff = a.currentPrice - a.target}
-				<li class="al card" class:reached={a.reached} data-testid="alert-item">
-					{#if a.reached}<span class="stamp" data-testid="reached-badge">Reached!</span>{/if}
-					<img class="thumb" src={a.image || categoryArt('other')} alt="{a.name} - placeholder image" width="72" height="72" />
+				<li class="al" class:reached={a.reached} data-testid="alert-item">
+					<img class="athumb" src={a.image || categoryArt('other')} alt="{a.name} - placeholder image" width="72" height="96" />
 					<div class="ai">
+						{#if a.reached}<span class="stamp" data-testid="reached-badge">Reached!</span>{/if}
 						<a class="an" href={a.id.startsWith('live-') ? `/results?q=${encodeURIComponent(a.query)}` : `/product/${a.id}`}>{a.name}</a>
-						<div class="row nums">
-							<span>Target <b class="mono" data-testid="alert-target-val">{inr(a.target)}</b></span>
-							<span>Now <b class="mono" data-testid="alert-current">{inr(a.currentPrice)}</b>{a.storeName ? ` on ${a.storeName}` : ''}</span>
-						</div>
+						<dl class="nums">
+							<div><dt>Target</dt><dd class="mono" data-testid="alert-target-val">{inr(a.target)}</dd></div>
+							<div><dt>Now{a.storeName ? ` · ${a.storeName}` : ''}</dt><dd class="mono" data-testid="alert-current">{inr(a.currentPrice)}</dd></div>
+						</dl>
 						<p class="muted fine">
 							{#if a.reached}
-								Price hit your target{a.reachedAt ? ` ${timeAgo(a.reachedAt)}` : ''} - go grab it!
+								Price hit your target{a.reachedAt ? ` ${timeAgo(a.reachedAt)}` : ''} - go grab it.
 							{:else if diff > 0}
 								{inr(diff)} to go · started at {inr(a.startPrice)}
 							{/if}
 							· {a.checkedAt ? `checked ${timeAgo(a.checkedAt)}` : 'not checked yet'}
 						</p>
 					</div>
-					<button type="button" class="btn sm icon-only del" onclick={() => remove(a.id, a.name)} aria-label="Delete alert for {a.name}" data-testid="alert-delete"><Icon name="trash" size={18} /></button>
+					<button type="button" class="btn sm icon-only quiet del" onclick={() => remove(a.id, a.name)} aria-label="Delete alert for {a.name}" data-testid="alert-delete"><Icon name="trash" size={16} /></button>
 				</li>
 			{/each}
 		</ul>
@@ -88,8 +88,9 @@
 <svelte:head><title>Alerts - PriceLens</title></svelte:head>
 
 <style>
-	.hd {
-		gap: 4px;
+	.top {
+		border-bottom: 0;
+		padding-bottom: 0;
 	}
 	.alist {
 		list-style: none;
@@ -97,63 +98,79 @@
 		padding: 0;
 		display: flex;
 		flex-direction: column;
-		gap: 16px;
+		border-top: 1px solid var(--hair);
 	}
 	.al {
-		position: relative;
 		display: grid;
 		grid-template-columns: auto 1fr auto;
-		gap: 12px;
+		gap: 16px;
 		align-items: center;
-		padding: 12px;
+		padding: 18px 0;
+		border-bottom: 1px solid var(--hair);
 	}
-	.al.reached {
-		background: var(--green);
-		color: #111;
-	}
-	:global(html[data-theme='dark']) .al.reached {
-		background: #0f2a18;
-		color: var(--ink);
-		border-color: var(--green);
-	}
-	.al .thumb {
-		width: 64px;
-		height: 64px;
+	.athumb {
+		width: 72px;
+		height: 96px;
+		object-fit: cover;
+		background: var(--surface-2);
 	}
 	.ai {
 		min-width: 0;
 		display: flex;
 		flex-direction: column;
-		gap: 4px;
+		align-items: flex-start;
+		gap: 8px;
 	}
 	.an {
-		font-weight: 700;
+		font-family: var(--serif);
+		font-size: 1.25rem;
+		line-height: 1.15;
 		color: inherit;
+		text-decoration: none;
 		overflow-wrap: anywhere;
 	}
+	.an:hover {
+		text-decoration: underline;
+	}
 	.nums {
-		gap: 4px 14px;
-		font-size: 0.92rem;
+		display: flex;
+		gap: 28px;
+		margin: 0;
+	}
+	.nums dt {
+		font: 500 0.64rem/1.2 var(--sans);
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--muted);
+	}
+	.nums dd {
+		margin: 2px 0 0;
+		font-size: 1.05rem;
+		font-weight: 500;
+	}
+	.al.reached .nums div:last-child dd {
+		color: var(--sage-fg);
 	}
 	.fine {
-		font-size: 0.82rem;
-	}
-	.al.reached .muted {
-		color: inherit;
-		opacity: 0.85;
+		font-size: 0.8rem;
 	}
 	.stamp {
-		position: absolute;
-		top: -12px;
-		right: 56px;
-		padding: 3px 10px;
-		font: 700 0.85rem var(--mono);
-		color: #111;
-		background: var(--yellow);
-		border: var(--bw) solid #111;
-		border-radius: 8px;
-		box-shadow: 2px 2px 0 #111;
-		rotate: 5deg;
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 4px 10px;
+		font: 500 0.66rem/1.2 var(--sans);
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--sage-fg);
+		background: var(--sage-bg);
+	}
+	.stamp::before {
+		content: '';
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: currentColor;
 	}
 	:global(.spin) {
 		animation: spin 0.8s linear infinite;
